@@ -23,7 +23,7 @@
 - name: Create virtualenv
   pip:
     virtualenv: '{{ jidlobot_install_path }}/.venv'
-    virtualenv_python: 'python3'
+    virtualenv_command: 'python3 -m venv'
     requirements: '{{ jidlobot_install_path }}/requirements.txt'
 
 - name: Configure jidlobot

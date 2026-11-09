@@ -20,6 +20,9 @@ def get_menus(config):
 
 
 def get_title():
-    locale.setlocale(locale.LC_ALL, "cs_CZ.UTF-8")
+    try:
+        locale.setlocale(locale.LC_ALL, "cs_CZ.UTF-8")
+    except locale.Error:
+        pass
     date = datetime.strftime(datetime.now(), "%A %-d.%-m.")
     return "Obědy – " + date

@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 import requests
-import socket
 
 
 def fetch(url, config):
@@ -11,14 +10,14 @@ def fetch(url, config):
     try:
         result = requests.get(url, timeout=config["HTTP_TIMEOUT"])
         html = BeautifulSoup(result.content, "html5lib")
-        day = html.findAll("div", {"class": "menicka"})[0]
-        restaurant = html.select(".profile .line1 h1")[0].text
+        day = html.find_all("div", {"class": "menicka"})[0]
+        restaurant = " ".join(html.select(".profile .line1 h1")[0].text.split())
 
         for line in day.select("li"):
             name = line.select(".polozka")
             if len(name) > 0:
-                names.append(name[0].text)
-                prices.append(name[0].next_sibling.next_sibling.text)
+                names.append(" ".join(name[0].text.split()))
+                prices.append(" ".join(name[0].next_sibling.next_sibling.text.split()))
 
         for i in range(len(names)):
             line = "- " + names[i] + " " + prices[i]
@@ -29,7 +28,7 @@ def fetch(url, config):
         else:
             return ""
 
-    except socket.timeout:
+    except requests.exceptions.Timeout:
         return "" + url + ": timeout :angry:\n"
 
     except Exception:

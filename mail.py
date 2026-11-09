@@ -54,7 +54,7 @@ def send_mail(body, subject, config):
         """
 
         body_html = "<html><head><style type='text/css'>" + css + \
-            "</style></head>" + "<body>" + mistune.markdown(body) + "</body></html>"
+            "</style></head>" + "<body>" + mistune.html(body) + "</body></html>"
 
         html_part = MIMEText(body_html, "html")
 
