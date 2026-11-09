@@ -23,8 +23,11 @@ def fetch(url, config):
                 for extra in name[0].find_all(["em", "span"]):
                     extra.extract()
                 text = " ".join(name[0].get_text(" ", strip=True).split())
+                text = text.lstrip("*").strip()
                 if not text:
                     continue
+                if len(text) >= 200 and text[-1] not in ".!?…":
+                    text += " …"
                 price = line.select(".cena")
                 if price:
                     text += " " + " ".join(price[0].text.split())
