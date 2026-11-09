@@ -16,11 +16,16 @@ def fetch(url, config):
         for line in day.select("li"):
             name = line.select(".polozka")
             if len(name) > 0:
-                names.append(" ".join(name[0].text.split()))
-                prices.append(" ".join(name[0].next_sibling.next_sibling.text.split()))
+                for allergen in name[0].find_all("em"):
+                    allergen.extract()
+                names.append(" ".join(name[0].get_text(" ", strip=True).split()))
+                price = line.select(".cena")
+                prices.append(" ".join(price[0].text.split()) if price else "")
 
         for i in range(len(names)):
-            line = "- " + names[i] + " " + prices[i]
+            line = "- " + names[i]
+            if prices[i]:
+                line += " " + prices[i]
             menu += line + "\n"
 
         if len(menu) > 0:
