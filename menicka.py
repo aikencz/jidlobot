@@ -1,3 +1,6 @@
+import re
+from datetime import datetime
+
 from bs4 import BeautifulSoup
 import requests
 
@@ -14,7 +17,25 @@ def fetch(url, config):
     try:
         result = requests.get(url, timeout=config["HTTP_TIMEOUT"])
         html = BeautifulSoup(result.content, "html5lib")
-        day = html.find_all("div", {"class": "menicka"})[0]
+        blocks = html.find_all("div", {"class": "menicka"})
+        today = datetime.now().date()
+        day = None
+        dated = False
+        for block in blocks:
+            nadpis = block.find("div", {"class": "nadpis"})
+            if nadpis is None:
+                continue
+            match = re.search(r"(\d{1,2}\.\d{1,2}\.\d{4})", nadpis.text)
+            if match is None:
+                continue
+            dated = True
+            if datetime.strptime(match.group(1), "%d.%m.%Y").date() == today:
+                day = block
+                break
+        if day is None:
+            if dated:
+                return ""
+            day = blocks[0]
         restaurant = " ".join(html.select(".profile .line1 h1")[0].text.split())
 
         for line in day.select("li"):
