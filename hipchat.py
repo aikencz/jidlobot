@@ -4,7 +4,7 @@ import mistune
 
 
 def send_hipchat(body, subject, config):
-    body = mistune.markdown(body).replace("<h4>", "<br><b>").replace("</h4>", "</b><br>")
+    body = mistune.html(body).replace("<h4>", "<br><b>").replace("</h4>", "</b><br>")
     message = "<b>" + subject + "</b><br>" + body
     payload = json.dumps({
         "color": config["HIPCHAT_COLOR"],

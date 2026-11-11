@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 import requests
-import socket
 import re
 
 
@@ -17,12 +16,12 @@ def fetch(url, config):
             "Referer": url
         })
         html = BeautifulSoup(result.content, "html5lib")
-        day = html.findAll("div", {"class": "tmi-group"})[0]
+        day = html.find_all("div", {"class": "tmi-group"})[0]
         restaurant = html.select("h1.res-name a")[0].text.strip()
 
-        for j in day.findAll("div", {"class": "tmi-daily"}):
-            names.append(j.findAll("div", {"class": "tmi-name"})[0].text.strip())
-            prices.append(j.findAll("div", {"class": "tmi-price"})[0].text.strip())
+        for j in day.find_all("div", {"class": "tmi-daily"}):
+            names.append(j.find_all("div", {"class": "tmi-name"})[0].text.strip())
+            prices.append(j.find_all("div", {"class": "tmi-price"})[0].text.strip())
 
         for i in range(len(names)):
             line = "- " + names[i] + " " + prices[i]
@@ -33,7 +32,7 @@ def fetch(url, config):
         else:
             return ""
 
-    except socket.timeout:
+    except requests.exceptions.Timeout:
         return "" + url + ": timeout :angry:\n"
 
     except IndexError:
